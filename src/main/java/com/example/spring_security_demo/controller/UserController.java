@@ -1,6 +1,7 @@
 package com.example.spring_security_demo.controller;
 
 import com.example.spring_security_demo.dto.LoginResponseDTO;
+import com.example.spring_security_demo.dto.RegisterResponseDTO;
 import com.example.spring_security_demo.model.User;
 import com.example.spring_security_demo.service.JwtService;
 import com.example.spring_security_demo.service.UserService;
@@ -26,21 +27,17 @@ public class UserController {
     private AuthenticationManager authenticationManager;
     private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody User user){
+    public ResponseEntity<RegisterResponseDTO> register(@RequestBody User user){
         user.setPassword(encoder.encode(user.getPassword()));
         System.out.println(user.getPassword());
         service.saveUser(user);
-        String customMessage = "User Successfully Registered.";
-        return new ResponseEntity<>(customMessage, HttpStatus.CREATED);
+        RegisterResponseDTO responseDTO = new RegisterResponseDTO("User Registered Successfully.");
+        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody User user){
         Authentication authentication = authenticationManager
         .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(),user.getPassword()));  //to authentiate the client side hardcoded username and password with db one ..!!
-
-//        LoginResponseDTO loginResponseDTO = new LoginResponseDTO("abcd", null);
-//
-//        return ResponseEntity.status(HttpStatus.OK).body(loginResponseDTO);
 
         if (authentication.isAuthenticated()){
             String jwtToken = jwtService.generateToken(user.getUsername());
