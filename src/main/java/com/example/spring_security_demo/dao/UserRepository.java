@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepo extends JpaRepository<User,Integer> {  //<ORM entity(class which connects to the table,primary key>
+public interface UserRepository extends JpaRepository<User,Integer> {  //<ORM entity(class which connects to the table,primary key>
     User findByUsername(String username);
 
 

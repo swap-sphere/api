@@ -12,7 +12,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)  //auto generation of id by hibernite itself ,no need to pass id
     private int id;
 
+
     private String username;
+
     private String password;
     private String name;
 }

@@ -28,6 +28,14 @@ public class UserPrincipal implements UserDetails {  //in spring security the cu
 
     }
 
+    public int getId(){
+        return user.getId();
+    }
+
+    public String getName(){
+        return user.getName();
+    }
+
     @Override
     public String getUsername() {
         return user.getUsername();
