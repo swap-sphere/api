@@ -2,20 +2,15 @@ package com.example.spring_security_demo.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Optional;
-
 @Data
-@Entity
-@AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "category_test")
-public class Category {
-
-
+@AllArgsConstructor
+@Entity
+@Table(name = "filters")
+public class Filter {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -23,16 +18,13 @@ public class Category {
     @Column(nullable = false)
     private String name;
 
-//    @Column(nullable = true)
-//    private int parent_id;
-
+    // TODO: reference categoryId to table category_test column id
     @ManyToOne
-    @JoinColumn(name = "parent_id", referencedColumnName = "id")
-    private Category parent;
+    @JoinColumn(name = "category_id", referencedColumnName = "id")
+    private Category categoryId;
 
-    public Category(String name, Category parent){
+    public Filter(String name, Category categoryId){
         this.name = name;
-        this.parent = parent;
+        this.categoryId = categoryId;
     }
 }
-
