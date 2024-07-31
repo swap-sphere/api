@@ -1,12 +1,10 @@
 package com.example.spring_security_demo.controller;
 
-import com.example.spring_security_demo.dto.LoginRequestDTO;
-import com.example.spring_security_demo.dto.LoginResponseDTO;
-import com.example.spring_security_demo.dto.RegisterResponseDTO;
-import com.example.spring_security_demo.dto.UserResponseDTO;
+import com.example.spring_security_demo.dto.*;
 import com.example.spring_security_demo.model.User;
 import com.example.spring_security_demo.model.UserPrincipal;
 import com.example.spring_security_demo.service.JwtService;
+import com.example.spring_security_demo.service.SeederService;
 import com.example.spring_security_demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +27,8 @@ public class UserController {
     private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
     //to hold the userPrinciple object
+    @Autowired
+    private SeederService seederService;
 
 
     @PostMapping("/register")
@@ -37,6 +37,9 @@ public class UserController {
         System.out.println(user.getPassword());
         service.saveUser(user);
         RegisterResponseDTO responseDTO = new RegisterResponseDTO("User Registered Successfully.");
+
+        seederService.seed();
+
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
     @PostMapping("/login")
@@ -81,5 +84,10 @@ public class UserController {
 
 //        LoginRequestDTO responseDTO = new LoginRequestDTO(null)
         return ResponseEntity.status(HttpStatus.OK).body(userResponseDTO);
+    }
+
+    @PostMapping("/seed")
+    public ResponseEntity<GenericResponseDTO> seed() {
+        return new ResponseEntity<>(new GenericResponseDTO("Success"), HttpStatus.CREATED);
     }
 }
