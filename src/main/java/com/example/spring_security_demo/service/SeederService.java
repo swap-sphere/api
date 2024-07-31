@@ -5,6 +5,7 @@ import com.example.spring_security_demo.dao.FilterOptionRepository;
 import com.example.spring_security_demo.dao.FilterRepository;
 import com.example.spring_security_demo.model.Category;
 import com.example.spring_security_demo.model.Filter;
+import com.example.spring_security_demo.model.FilterOption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,13 +32,13 @@ public class SeederService {
         categoryRepository.save(laptop);
 
         Filter brandLaptop = new Filter("Brand", laptop);
-//        FilterOption apple = new FilterOption("Apple", brandLaptop);
-//        FilterOption lenovo = new FilterOption("Lenovo", brandLaptop);
-//        FilterOption dell = new FilterOption("Dell", brandLaptop);
+        FilterOption apple = new FilterOption("Apple", brandLaptop);
+        FilterOption lenovo = new FilterOption("Lenovo", brandLaptop);
+        FilterOption dell = new FilterOption("Dell", brandLaptop);
 
-//        filterOptionRepository.save(apple);
-//        filterOptionRepository.save(lenovo);
-//        filterOptionRepository.save(dell);
+        filterOptionRepository.save(apple);
+        filterOptionRepository.save(lenovo);
+        filterOptionRepository.save(dell);
 
         Filter ramLaptop = new Filter("RAM", laptop);
         Filter screenSize = new Filter("Screen Size", laptop);
