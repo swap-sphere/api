@@ -8,11 +8,12 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: Remove this dependency
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "category_test")
+@Table(name = "categories")
 public class ProductCategory {
 
     @Id
