@@ -39,20 +39,35 @@ public class SecurityConfig {
         return config.getAuthenticationManager();
     }
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {  //since we have to change the default configuration we have to return the obj of securityfilterchain
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {  //since we have to change the default configuration we have to return the obj of securityfilterchain
+//
+//        http.csrf(customizer -> customizer.disable())  //disabling csrf
+//                .authorizeHttpRequests(request -> request
+//                .requestMatchers("/register","/login")
+//                .permitAll()        //only request matches with "register" is allowed without authorisation ,every other requests should be authrized..!
+//                .anyRequest().authenticated())  //all req authenticating
+////              .formLogin(Customizer.withDefaults())  //default form login is not required if session is STATELESS
+//                .httpBasic(Customizer.withDefaults())   //default security settings
+//                .sessionManagement(session ->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //dont want to maintain session ,for every refresh will be new session..!
+//                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);   //adding filter before the authentication filter to validate the token receiving from req..,before calling the default filter (usernamepasswordFilter we are telling the spring securtiy to call our custom filter(jwtFilter)
+//        return http.build();
+//    }
 
-        http.csrf(customizer -> customizer.disable())  //disabling csrf
-                .authorizeHttpRequests(request -> request
-                .requestMatchers("/register","/login")
-                .permitAll()        //only request matches with "register" is allowed without authorisation ,every other requests should be authrized..!
-                .anyRequest().authenticated())  //all req authenticating
-//              .formLogin(Customizer.withDefaults())  //default form login is not required if session is STATELESS
-                .httpBasic(Customizer.withDefaults())   //default security settings
-                .sessionManagement(session ->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //dont want to maintain session ,for every refresh will be new session..!
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);   //adding filter before the authentication filter to validate the token receiving from req..,before calling the default filter (usernamepasswordFilter we are telling the spring securtiy to call our custom filter(jwtFilter)
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+//                        .requestMatchers("/register", "/login","/user").permitAll()
+                        .requestMatchers("/addcart", "/wishlist", "/order","/user").authenticated()
+                        .anyRequest().permitAll()
+                )
+                .httpBasic(Customizer.withDefaults())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
+
 
     //since below userDetails service are dealing with static values ,we cannot use that ..!!!!;
 
