@@ -31,7 +31,7 @@ public class FilterService {
         if (category.isEmpty()){
             throw new BadRequestException("Category Not Present.");
         } else{
-            if (category.get().getParent() == null){
+            if (category.get().getParentId() == null){
                 throw new BadRequestException("Filter cannot be created for parent Category");
             } else{
                 Filter filter = new Filter(filterName, category.get());

@@ -1,35 +1,30 @@
 package com.example.spring_security_demo.model;
 
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Optional;
-
 @Data
-@Entity
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Entity
 @Table(name = "categories")
 public class Category {
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(nullable = false)
     private String name;
 
     @ManyToOne
     @JoinColumn(name = "parent_id", referencedColumnName = "id")
-    private Category parent;
+    private Category parentId;
 
-    public Category(String name, Category parent){
+    public Category(String name, Category parentId){
         this.name = name;
-        this.parent = parent;
+        this.parentId = parentId;
     }
-}
 
+}
