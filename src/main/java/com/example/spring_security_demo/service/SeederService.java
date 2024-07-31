@@ -5,7 +5,6 @@ import com.example.spring_security_demo.dao.FilterOptionRepository;
 import com.example.spring_security_demo.dao.FilterRepository;
 import com.example.spring_security_demo.model.Category;
 import com.example.spring_security_demo.model.Filter;
-import com.example.spring_security_demo.model.FilterOption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
