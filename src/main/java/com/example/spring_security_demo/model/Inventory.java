@@ -30,12 +30,12 @@ public class Inventory {
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category categoryId;
 
-    public Inventory(String name, String description, int stock, float price, float discount, Category category) {
+    public Inventory(String name, String description, int stock, float price, float discount, Category categoryId) {
         this.name = name;
         this.description = description;
         this.stock = stock;
         this.discount = discount;
         this.price = price;
-        this.categoryId = category;
+        this.categoryId = categoryId;
     }
 }

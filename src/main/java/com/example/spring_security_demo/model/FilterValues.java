@@ -16,10 +16,16 @@ public class FilterValues {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(nullable = false)
-    private String name;
+    @ManyToOne
+    @JoinColumn(name = "filter_option_id", referencedColumnName = "id")
+    private FilterOption filter_option_id;
 
     @ManyToOne
-    @JoinColumn(name = "category_id", referencedColumnName = "id")
-    private Category categoryId;
+    @JoinColumn(name = "inventory_id", referencedColumnName = "id")
+    private Inventory inventory_id;
+
+    public FilterValues(FilterOption filter_option_id,Inventory inventory_id){
+        this.filter_option_id = filter_option_id;
+        this.inventory_id = inventory_id;
+    }
 }
