@@ -5,6 +5,7 @@ import com.example.spring_security_demo.model.Inventory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -15,5 +16,8 @@ public class InventoryService {
     public Inventory getInventories(int id){
         Optional<Inventory> inventory = inventoryRepository.findById(id);
         return inventory.get();
+    }
+    public Map<String, Object> getInventoryDetails(Long InventoryId){
+        return inventoryRepository.fetchInventoryDetails(InventoryId);
     }
 }
