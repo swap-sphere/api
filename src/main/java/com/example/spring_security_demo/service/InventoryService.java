@@ -23,7 +23,6 @@ public class InventoryService {
 
     @Autowired
     private ObjectMapper objectMapper;
-
     public Inventory getInventories(int id) {
         Optional<Inventory> inventory = inventoryRepository.findById(id);
         return inventory.get();
@@ -36,10 +35,8 @@ public class InventoryService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Inventory not found");
         }
 
-        // Create a mutable copy of the inventoryDetails map
         Map<String, Object> mutableInventoryDetails = new HashMap<>(inventoryDetails);
 
-        // Deserialize specifications if it is returned as a string
         String specificationsJson = (String) mutableInventoryDetails.get("specifications");
         try {
             Map<String, Object> specifications = objectMapper.readValue(specificationsJson, Map.class);
@@ -47,7 +44,6 @@ public class InventoryService {
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Failed to parse specifications JSON", e);
         }
-
         return mutableInventoryDetails;
     }
 }
