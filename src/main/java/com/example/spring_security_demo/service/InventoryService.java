@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -31,18 +32,23 @@ public class InventoryService {
     public Map<String, Object> getInventoryDetails(Long inventoryId) {
         Map<String, Object> inventoryDetails = inventoryRepository.fetchInventoryDetails(inventoryId);
 
-        if (inventoryDetails == null) {
+        if (inventoryDetails.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Inventory not found");
         }
 
         Map<String, Object> mutableInventoryDetails = new HashMap<>(inventoryDetails);
 
         String specificationsJson = (String) mutableInventoryDetails.get("specifications");
-        try {
-            Map<String, Object> specifications = objectMapper.readValue(specificationsJson, Map.class);
-            mutableInventoryDetails.put("specifications", specifications);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Failed to parse specifications JSON", e);
+        if (specificationsJson != null) {
+            try {
+                Map<String, Object> specifications = objectMapper.readValue(specificationsJson, Map.class);
+                mutableInventoryDetails.put("specifications", specifications);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException("Failed to parse specifications JSON", e);
+            }
+        } else {
+            mutableInventoryDetails.put("specifications", Collections.emptyMap());
+
         }
         return mutableInventoryDetails;
     }
