@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -35,23 +36,22 @@ public class InventoryService {
     public Map<String, Object> getInventoryDetails(Long inventoryId) {
         Map<String, Object> inventoryDetails = inventoryRepository.fetchInventoryDetails(inventoryId);
 
-        if (inventoryDetails == null) {
+        if (inventoryDetails.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Inventory not found");
         }
 
         Map<String, Object> mutableInventoryDetails = new HashMap<>(inventoryDetails);
 
-        Object specificationsObj = mutableInventoryDetails.get("specifications");
-        if (specificationsObj instanceof String specificationsJson) {
+        String specificationsJson = (String) mutableInventoryDetails.get("specifications");
+        if (specificationsJson != null) {
             try {
                 Map<String, Object> specifications = objectMapper.readValue(specificationsJson, Map.class);
                 mutableInventoryDetails.put("specifications", specifications);
             } catch (JsonProcessingException e) {
-                logger.error("Failed to parse specifications JSON", e);
                 throw new RuntimeException("Failed to parse specifications JSON", e);
             }
         } else {
-            throw new RuntimeException("Invalid specifications format");
+            mutableInventoryDetails.put("specifications", Collections.emptyMap());
         }
 
         return mutableInventoryDetails;
