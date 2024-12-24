@@ -4,10 +4,9 @@ import com.example.spring_security_demo.dao.InventoryRepository;
 import com.example.spring_security_demo.model.Inventory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -19,14 +18,19 @@ import java.util.Optional;
 @Service
 public class InventoryService {
 
-    @Autowired
-    InventoryRepository inventoryRepository;
+    private static final Logger logger = LoggerFactory.getLogger(InventoryService.class);
 
-    @Autowired
-    private ObjectMapper objectMapper;
-    public Inventory getInventories(int id) {
-        Optional<Inventory> inventory = inventoryRepository.findById(id);
-        return inventory.get();
+    private final InventoryRepository inventoryRepository;
+    private final ObjectMapper objectMapper;
+
+    public InventoryService(InventoryRepository inventoryRepository, ObjectMapper objectMapper) {
+        this.inventoryRepository = inventoryRepository;
+        this.objectMapper = objectMapper;
+    }
+
+    public Inventory getInventoryById(int id) {
+        return inventoryRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Inventory not found"));
     }
 
     public Map<String, Object> getInventoryDetails(Long inventoryId) {
@@ -48,8 +52,8 @@ public class InventoryService {
             }
         } else {
             mutableInventoryDetails.put("specifications", Collections.emptyMap());
-
         }
+
         return mutableInventoryDetails;
     }
 }
