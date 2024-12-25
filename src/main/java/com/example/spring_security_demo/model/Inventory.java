@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,9 +28,12 @@ public class Inventory {
 
     private float price;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category categoryId;
+
+    @OneToMany(mappedBy = "inventory_id")
+    private List<FilterValues> filterValues;
 
     public Inventory(String name, String description, int stock, float price, float discount, Category categoryId) {
         this.name = name;

@@ -18,14 +18,14 @@ public class FilterValues {
 
     @ManyToOne
     @JoinColumn(name = "filter_option_id", referencedColumnName = "id")
-    private FilterOption filter_option_id;
+    private FilterOption filterOptionId;
 
     @ManyToOne
     @JoinColumn(name = "inventory_id", referencedColumnName = "id")
     private Inventory inventory_id;
 
     public FilterValues(FilterOption filter_option_id,Inventory inventory_id){
-        this.filter_option_id = filter_option_id;
+        this.filterOptionId = filter_option_id;
         this.inventory_id = inventory_id;
     }
 }

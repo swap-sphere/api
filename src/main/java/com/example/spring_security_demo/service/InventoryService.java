@@ -1,9 +1,18 @@
 package com.example.spring_security_demo.service;
 
 import com.example.spring_security_demo.dao.InventoryRepository;
+import com.example.spring_security_demo.dto.InventoryFilterRequestDTO;
+import com.example.spring_security_demo.dto.InventoryFilterResponseDTO;
+import com.example.spring_security_demo.dto.sql.InventoryFilterQueryDTO;
+import com.example.spring_security_demo.model.Category;
+import com.example.spring_security_demo.model.FilterValues;
 import com.example.spring_security_demo.model.Inventory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -11,16 +20,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class InventoryService {
 
     @Autowired
     InventoryRepository inventoryRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -51,5 +60,54 @@ public class InventoryService {
 
         }
         return mutableInventoryDetails;
+    }
+
+    public InventoryFilterResponseDTO getFilteredInventories(int categoryId, int page, int limit, List<Integer> filterOptionIds) {
+        int offset = (page - 1) * limit;
+
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<InventoryFilterQueryDTO> cq = cb.createQuery(InventoryFilterQueryDTO.class);
+        Root<Inventory> inventory = cq.from(Inventory.class);
+
+        Join<Inventory, FilterValues> filterValue = inventory.join("filterValues");
+
+        Join<Inventory, Category> category = inventory.join("categoryId");
+
+        cq.select(cb.construct(
+                InventoryFilterQueryDTO.class,
+                inventory.get("id"),
+                inventory.get("name"),
+                inventory.get("description"),
+                inventory.get("stock"),
+                inventory.get("price"),
+                inventory.get("discount"),
+                category.get("name"),
+                category.get("id")
+        ));
+
+        Predicate categoryPredicate = cb.equal(inventory.get("categoryId").get("id"), categoryId);  // Use categoryId instead of category
+        if (!filterOptionIds.isEmpty()) {
+            Predicate filterPredicate = filterValue.get("filterOptionId").get("id").in(filterOptionIds);
+            cq.where(cb.and(categoryPredicate, filterPredicate));
+        }
+
+        cq.groupBy(
+                inventory.get("id"),
+                inventory.get("name"),
+                inventory.get("description"),
+                inventory.get("stock"),
+                inventory.get("price"),
+                inventory.get("discount"),
+                category.get("name"),
+                category.get("id")
+        );
+
+        TypedQuery<InventoryFilterQueryDTO> query = entityManager.createQuery(cq);
+        query.setFirstResult(offset);
+        query.setMaxResults(limit);
+
+        long total = inventoryRepository.fetchFilteredInventoriesCount(categoryId, filterOptionIds);
+        List<InventoryFilterQueryDTO> inventories = query.getResultList();
+        return new InventoryFilterResponseDTO(inventories, limit, page, total);
     }
 }

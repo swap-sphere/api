@@ -27,6 +27,9 @@ public class Category {
     @OneToMany(mappedBy = "parentId")
     private List<Category> children;
 
+    @OneToOne(mappedBy = "categoryId")
+    private Inventory inventory_id;
+
     public Category(String name, Category parentId){
         this.name = name;
         this.parentId = parentId;
